@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<ConsumerCardService>();
-builder.Services.AddHttpClient<IProviderCardIntegration, ProviderCardIntegration>(client =>
+builder.Services.AddHttpClient<ProviderCardIntegration>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ProviderAppBaseUrl"]);
 });

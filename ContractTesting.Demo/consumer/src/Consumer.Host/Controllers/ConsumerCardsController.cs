@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Consumer.Host.Controllers;
 
 [ApiController]
-[Route("api/cards")]
-public class CardsController : ControllerBase
+[Route("api/consumer/cards")]
+public class ConsumerCardsController : ControllerBase
 {
     private readonly ConsumerCardService _consumerCardService;
-    public CardsController(ConsumerCardService consumerCardService)
+    public ConsumerCardsController(ConsumerCardService consumerCardService)
     {
         _consumerCardService = consumerCardService;
     }
@@ -22,6 +22,6 @@ public class CardsController : ControllerBase
     public async Task<ActionResult<CardsScreenResponse>> GetCardsScreen(string userId)
     {
         var result = await _consumerCardService.GetCardsScreen(userId);
-        return result.Success ? Ok(result.Data) : NotFound();
+        return result.Success ? Ok(result.Data) : BadRequest();
     }
 }

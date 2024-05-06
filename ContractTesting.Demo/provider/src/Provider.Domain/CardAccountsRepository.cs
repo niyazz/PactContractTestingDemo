@@ -2,12 +2,19 @@
 
 namespace Provider.Domain;
 
-public class CardAccountsRepository
+public class CardAccountsRepository : ICardAccountsRepository
 {
-    public async Task<CardAccountInfo[]?> GetCardAccountsByUserId(string userId)
+    public async Task<UserCardAccounts?> GetCardAccountsByUserId(string userId)
     {
         await Task.Delay(1000);
-        DatabaseFakes.UsersCardAccounts.TryGetValue(userId, out var userCardAccounts);
-        return userCardAccounts;
+        var dbResult = SomeDatabase.GetData(userId);
+
+        return dbResult != null
+            ? new UserCardAccounts
+            {
+                UserFullName = dbResult.Value.Item1,
+                Accounts = dbResult.Value.Item2
+            }
+            : null;
     }
 }

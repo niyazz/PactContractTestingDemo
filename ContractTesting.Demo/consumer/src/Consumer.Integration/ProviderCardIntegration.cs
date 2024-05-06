@@ -4,7 +4,7 @@ using Consumer.Integration.ProviderContracts.V1;
 
 namespace Consumer.Integration;
 
-public class ProviderCardIntegration : IProviderCardIntegration
+public class ProviderCardIntegration 
 {
     private readonly HttpClient _httpClient;
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
@@ -17,13 +17,13 @@ public class ProviderCardIntegration : IProviderCardIntegration
         _httpClient = httpClient;
     }
     
-    public async Task<CardAccountInfoResponse[]?> GetCardAccountInfo(string userId)
+    public async Task<UserCardAccountsDto?> GetCardAccountInfo(string userId)
     {
-        var response = await _httpClient.GetAsync($"api/cards/accounts/{userId}");
+        var response = await _httpClient.GetAsync($"api/provider/cards/accounts/{userId}");
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<CardAccountInfoResponse[]>(JsonSerializerOptions);
+            return await response.Content.ReadFromJsonAsync<UserCardAccountsDto>(JsonSerializerOptions);
         }
 
         // в реальном приложении здесь мы пишем какие-то логи или делаем что-то еще

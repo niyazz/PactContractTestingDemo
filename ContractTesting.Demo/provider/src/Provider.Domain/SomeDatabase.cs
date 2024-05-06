@@ -2,13 +2,29 @@
 
 namespace Provider.Domain;
 
-public static class DatabaseFakes
+public static class SomeDatabase
 {
     private const string ActiveState = "ACTIVE";
     private const string BlockedState = "BLOCKED";
     private const string FrozenState = "FROZEN";
 
-    public static Dictionary<string, CardAccountInfo[]> UsersCardAccounts = new()
+
+    public static (string, CardAccountInfo[])? GetData(string userId)
+    {
+        if (UserData.TryGetValue(userId, out var userData) && UsersCardAccounts.TryGetValue(userId, out var userAccounts))
+        {
+            return (userData, userAccounts);
+        }
+        
+        return null;
+    }
+    
+    private static Dictionary<string, string> UserData = new()
+    {
+        {"userId1", "Иван_Иванов"},
+        {"userId2", "Петр_Петров"}
+    };
+    private static Dictionary<string, CardAccountInfo[]> UsersCardAccounts = new()
     {
         {
             "userId1", new[]

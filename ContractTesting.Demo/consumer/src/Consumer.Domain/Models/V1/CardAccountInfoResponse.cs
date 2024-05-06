@@ -2,13 +2,9 @@
 
 public class CardAccountInfoResponse
 {
-    /// <summary>
-    /// Идентификатор карточного счета
-    /// </summary>
+    ///<summary> Идентификатор карточного счета </summary>
     public string Id { get; set; }
 
-    /// <summary>
-    /// Карты, привязанные к счету
-    /// </summary>
+    ///<summary> Карты, привязанные к счету </summary>
     public CardInfoResponse[] Cards { get; set; }
 }

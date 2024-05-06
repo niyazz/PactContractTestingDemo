@@ -1,16 +1,14 @@
 ﻿using Consumer.Domain.Models.V1;
 using Consumer.Domain.Utils;
 using Consumer.Integration;
-using Consumer.Integration.ProviderContracts.V1;
-using CardAccountInfoResponse = Consumer.Domain.Models.V1.CardAccountInfoResponse;
 
 namespace Consumer.Domain;
 
 public class ConsumerCardService
 {
-    private readonly IProviderCardIntegration _providerCardIntegration;
+    private readonly ProviderCardIntegration _providerCardIntegration;
 
-    public ConsumerCardService(IProviderCardIntegration providerCardIntegration)
+    public ConsumerCardService(ProviderCardIntegration providerCardIntegration)
     {
         _providerCardIntegration = providerCardIntegration;
     }
@@ -33,20 +31,20 @@ public class ConsumerCardService
         });
     }
 
-    private CardAccountInfoResponse[] MapIntegrationToDomainModel(Integration.ProviderContracts.V1.CardAccountInfoResponse[] accountsInfo)
+    private CardAccountInfoResponse[] MapIntegrationToDomainModel(Integration.ProviderContracts.V1.UserCardAccountsDto userCardAccounts)
     {
-        var clientName = accountsInfo.FirstOrDefault()?.ClientInfo ?? throw new ArgumentException("У клиента должно быть ФИО");
-        var clientAccounts = accountsInfo.Select(account => new CardAccountInfoResponse
+        var clientName = userCardAccounts.ClientFullName;
+        var clientAccounts = userCardAccounts.Accounts.Select(account => new CardAccountInfoResponse
         {
             Id = account.Id,
-            Cards = account.Cards.Select(card => new Models.V1.CardInfoResponse
+            Cards = account.Cards.Select(card => new CardInfoResponse
             {
                 Id = card.Id,
                 IsAvailable = card.State == "ACTIVE",
                 Balance = card.Balance,
                 ExpiryDate = card.ExpiryDate.ToString("dd.MM.yyyy"),
                 HolderName = card.IsNamed
-                    ? $"{clientName.LastName.ToUpper()} {clientName.Name.ToUpper()}"
+                    ? clientName.ToUpper()
                     : string.Empty,
             }).ToArray()
         }).ToArray();
