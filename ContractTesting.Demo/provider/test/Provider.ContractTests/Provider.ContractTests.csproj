@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0"/>
+        <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="PactNet" Version="5.0.0-beta.2" />
+        <PackageReference Include="PactNet.Abstractions" Version="5.0.0-beta.2" />
+        <PackageReference Include="xunit" Version="2.4.1"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3"/>
+        <PackageReference Include="coverlet.collector" Version="3.1.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Provider.Contracts\Provider.Contracts.csproj" />
+      <ProjectReference Include="..\..\src\Provider.Host\Provider.Host.csproj" />
+    </ItemGroup>
+
+</Project>

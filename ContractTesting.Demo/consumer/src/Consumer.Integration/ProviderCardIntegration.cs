@@ -1,16 +1,13 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using Consumer.Integration.ProviderContracts.V1;
+using Newtonsoft.Json;
 
 namespace Consumer.Integration;
 
-public class ProviderCardIntegration 
+public class ProviderCardIntegration : IProviderCardIntegration
 {
     private readonly HttpClient _httpClient;
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-    };
 
     public ProviderCardIntegration(HttpClient httpClient)
     {
@@ -23,7 +20,10 @@ public class ProviderCardIntegration
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<UserCardAccountsDto>(JsonSerializerOptions);
+            return await response.Content.ReadFromJsonAsync<UserCardAccountsDto>(new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
         }
 
         // в реальном приложении здесь мы пишем какие-то логи или делаем что-то еще
