@@ -1,5 +1,6 @@
 ﻿using Consumer.Domain;
 using Consumer.Domain.Models.V1;
+using Consumer.Integration.ProviderContracts.V1;
 using EasyNetQ;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,7 +39,7 @@ public class ConsumerCardsController : ControllerBase
         var message = new Message<CardOrderApplicationEvent>(new CardOrderApplicationEvent
         {
             UserId = userId,
-            CardCode = Random.Shared.Next(100).ToString(),
+            CardCode = Random.Shared.Next(100),
             ApplicationDate = DateTime.Now
         });
         await advancedBus.PublishAsync(exchange, "super-routing-key", false, message);

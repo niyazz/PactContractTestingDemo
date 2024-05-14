@@ -1,11 +1,11 @@
-﻿namespace Consumer.Domain.Models.V1;
+﻿namespace Consumer.Integration.ProviderContracts.V1;
 
 public class CardOrderApplicationEvent
 {
     /// <summary> Идентификатор пользователя /// </summary>
     public string UserId { get; set; }
     /// <summary> Код карточного продукта /// </summary>
-    public string CardCode { get; set; }
+    public int CardCode { get; set; }
     /// <summary> Дата оформления заявления /// </summary>
     public DateTime ApplicationDate { get; set; }
 }

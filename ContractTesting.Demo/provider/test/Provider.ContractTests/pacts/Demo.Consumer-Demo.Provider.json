@@ -4,7 +4,25 @@
   },
   "interactions": [
     {
-      "description": "GET - /api/provider/cards/accounts/{userId} - 200 - body",
+      "contents": {
+        "content": {
+          "applicationDate": "2024-12-12T00:00:00",
+          "cardCode": 123,
+          "userId": "wqe"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "RABBITMQ: CardOrderApplicationEvent handled",
+      "metadata": {
+        "exchangeName": "SpecialExchangeName",
+        "routingKey": "super-routing-key"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "description": "REST: GET - /api/provider/cards/accounts/{userId} - 200 - body",
       "pending": false,
       "request": {
         "method": "GET",
@@ -42,7 +60,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "GET - /api/provider/cards/accounts/{userId} - 404 - no body",
+      "description": "REST: GET - /api/provider/cards/accounts/{userId} - 404 - no body",
       "pending": false,
       "request": {
         "method": "GET",

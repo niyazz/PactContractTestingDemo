@@ -17,6 +17,7 @@ namespace Provider.ContractTests.Rest.Consumer;
 public class ContractsWithConsumerTests : IDisposable
 {
     private readonly Uri _serverUri = new ("http://localhost:5000");
+    private const string ComType = "REST";
     private readonly Mock<ICardAccountsRepository> _cardAccountsRepository;
     private readonly PactVerifier _pactVerifier;
     private bool _disposedValue;
@@ -59,6 +60,7 @@ public class ContractsWithConsumerTests : IDisposable
         _pactVerifier
             .WithHttpEndpoint(_serverUri)
             .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
+            .WithFilter(ComType)
             .Verify();
     }
     

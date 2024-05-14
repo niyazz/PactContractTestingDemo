@@ -4,19 +4,16 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using PactNet;
-using PactNet.Matchers;
 using Xunit;
 using Xunit.Abstractions;
-using IPAddress = PactNet.Models.IPAddress;
 
-namespace Consumer.ContractTests;
+namespace Consumer.ContractTests.Rest;
 
 public class GetUserAccountsTests 
 {
     private readonly IPactBuilderV4 _pactBuilder;
+    private const string ComType = "REST";
 
     public GetUserAccountsTests(ITestOutputHelper testOutputHelper)
     {
@@ -40,7 +37,7 @@ public class GetUserAccountsTests
         var userIdForSuccess = "successId1";
         var expectedResponseBody = DataForTests.SuccessResult;
         
-        _pactBuilder.UponReceiving("GET - /api/provider/cards/accounts/{userId} - 200 - body")
+        _pactBuilder.UponReceiving($"{ComType}: GET - /api/provider/cards/accounts/{{userId}} - 200 - body")
             .WithRequest(HttpMethod.Get, $"/api/provider/cards/accounts/{userIdForSuccess}")
             .WillRespond()
             .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -61,14 +58,14 @@ public class GetUserAccountsTests
         });
     }
     
-    [Fact(DisplayName = "Demo.Provider при запросе счетов клиента возвращает 404, " +
-                        "если клиент не существует")]
+    [Fact(DisplayName = "Demo.Provider при запросе счетов" +
+                        " клиента возвращает 404, если клиент не существует")]
     public async Task GetUserAccounts_WhenClientNotExist_ReturnsFailure404()
     {
         // Arrange
         var userIdForFailure = "failureId1"; ;
 
-        _pactBuilder.UponReceiving("GET - /api/provider/cards/accounts/{userId} - 404 - no body")
+        _pactBuilder.UponReceiving($"{ComType}: GET - /api/provider/cards/accounts/{{userId}} - 404 - no body")
             .WithRequest(HttpMethod.Get, $"/api/provider/cards/accounts/{userIdForFailure}")
             .WillRespond()
             .WithStatus(HttpStatusCode.NotFound);
