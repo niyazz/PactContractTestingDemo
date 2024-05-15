@@ -15,7 +15,6 @@ namespace Consumer.ContractTests.RabbitMq;
 public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerSender>
 {
     private readonly IMessagePactBuilderV4 _pactBuilder;
-    private readonly Mock<IConsumerCardService> _consumerCardService;
     private const string ComType = "RABBITMQ";
 
     public CardOrderSatisfiedEventTests(ITestOutputHelper testOutputHelper, PactBrokerSender senderFixture)
@@ -34,7 +33,6 @@ public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerSender>
         senderFixture.ConsumerVersion = Assembly.GetAssembly(typeof(CardOrderSatisfiedEvent))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion!;
-        _consumerCardService = new Mock<IConsumerCardService>();
     }
 
     [Fact(DisplayName = "Demo.Provider присылает корректный контракт и пуш отправляется," +
