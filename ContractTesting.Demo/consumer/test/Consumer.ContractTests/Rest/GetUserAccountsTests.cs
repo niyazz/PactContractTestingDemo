@@ -4,28 +4,31 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
+using PactHelper;
 using PactNet;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Consumer.ContractTests.Rest;
 
-public class GetUserAccountsTests 
+public class GetUserAccountsTests : IClassFixture<PactBrokerSender>
 {
     private readonly IPactBuilderV4 _pactBuilder;
     private const string ComType = "REST";
 
-    public GetUserAccountsTests(ITestOutputHelper testOutputHelper)
+    public GetUserAccountsTests(ITestOutputHelper testOutputHelper, PactBrokerSender senderFixture)
     {
-        var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
+        var pactConfig = new PactConfig
         {
-            Outputters = new [] { new PactXUnitOutput(testOutputHelper)},
-            DefaultJsonSettings = new JsonSerializerOptions()
+            Outputters = new[] {new PactXUnitOutput(testOutputHelper)},
+            DefaultJsonSettings = new JsonSerializerOptions
             {
-               PropertyNameCaseInsensitive = true,
-               PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             }
-        });
+        };
+        var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", pactConfig);
+        senderFixture.PactInfo = pact;
         _pactBuilder = pact.WithHttpInteractions();
     }
     

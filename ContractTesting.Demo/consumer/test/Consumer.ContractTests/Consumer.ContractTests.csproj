@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\shared\PactHelper\PactHelper.csproj" />
       <ProjectReference Include="..\..\src\Consumer.Integration\Consumer.Integration.csproj" />
     </ItemGroup>
 

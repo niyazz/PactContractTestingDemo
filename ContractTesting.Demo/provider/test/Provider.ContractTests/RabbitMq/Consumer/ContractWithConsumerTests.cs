@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using PactNet;
-using PactNet.Matchers;
 using Provider.Contracts.Models;
 using Xunit;
 using Xunit.Abstractions;
@@ -16,7 +15,7 @@ public class ContractWithConsumerTests
 
     public ContractWithConsumerTests(ITestOutputHelper testOutputHelper) 
     {
-        _pactBuilder = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
+        _pactBuilder = Pact.V4(consumer: "Demo.Provider", provider: "Demo.Consumer", new PactConfig
         {
             Outputters = new [] { new PactXUnitOutput(testOutputHelper)},
             DefaultJsonSettings = new JsonSerializerOptions()
@@ -31,16 +30,16 @@ public class ContractWithConsumerTests
     public async Task Verify_RabbitMqDemoConsumerContacts()
     {
         // Arrange
-        var message = new
-        {
-            UserId = Match.Type("rabbitmqUserId"),
-            CardCode = Match.Integer(100),
-            ApplicationDate = new DateTime(2024, 12, 12)
-        };
+        // var message = new
+        // {
+        //     UserId = Match.Type("rabbitmqUserId"),
+        //     CardCode = Match.Integer(100),
+        //     ApplicationDate = new DateTime(2024, 12, 12)
+        // };
 
-        var mess = new CardOrderApplicationEvent
+        var message = new CardOrderApplicationEvent
         {
-            UserId = "wqe",
+            UserId = "rabbitmqUserId",
             CardCode = 123,
             ApplicationDate = new DateTime(2024, 12, 12) 
         };
@@ -49,7 +48,7 @@ public class ContractWithConsumerTests
             .ExpectsToReceive($"{ComType}: CardOrderApplicationEvent handled")
             .WithMetadata("exchangeName", "SpecialExchangeName")
             .WithMetadata("routingKey", "super-routing-key")
-            .WithJsonContent(mess)
+            .WithJsonContent(message)
             
             // Act
             .VerifyAsync<CardOrderApplicationEvent>(async msg =>
@@ -57,9 +56,9 @@ public class ContractWithConsumerTests
                 
                 // Assert
                 // при желании здесь можно вызвать handler и проверить результат
-                // Assert.Equal(message.Value.UserId, msg.UserId);
-                // Assert.Equal(message.CardCode.Value.CardCode, msg.CardCode);
-                // Assert.Equal(message.ApplicationDate, msg.ApplicationDate);
+                Assert.Equal(message.UserId, msg.UserId);
+                Assert.Equal(message.CardCode, msg.CardCode);
+                Assert.Equal(message.ApplicationDate, msg.ApplicationDate);
             });
     }
 }

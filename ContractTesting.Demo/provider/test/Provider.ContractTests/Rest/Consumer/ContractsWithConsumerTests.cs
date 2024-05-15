@@ -1,10 +1,11 @@
 using System;
-using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using PactNet.Verifier;
+using Provider.Contracts.Models;
 using Provider.Domain;
 using Provider.Domain.Models;
 using Provider.Host;
@@ -55,11 +56,20 @@ public class ContractsWithConsumerTests : IDisposable
                 services.AddSingleton<ICardAccountsRepository>(_ => _cardAccountsRepository.Object));
         _server = _serverBuilder.Build();
         _server.StartAsync();
+
+        var infoVersion = Assembly.GetAssembly(typeof(UserCardAccountsResponse))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion;
         
         // Act & Assert
         _pactVerifier
             .WithHttpEndpoint(_serverUri)
-            .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
+            .WithPactBrokerSource(new Uri("http://localhost:9292"), options =>
+            {
+                options.BasicAuthentication("admin", "pass");
+                options.PublishResults(infoVersion);
+            })
+             // .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
             .WithFilter(ComType)
             .Verify();
     }

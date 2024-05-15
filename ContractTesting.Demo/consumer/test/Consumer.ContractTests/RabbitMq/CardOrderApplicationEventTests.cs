@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace Consumer.ContractTests.RabbitMq;
 
-public class ContractWithConsumerTests : IDisposable
+public class CardOrderApplicationEventTests : IDisposable
 {
     private readonly PactVerifier _pactVerifier;
     private const string ComType = "RABBITMQ";
@@ -20,9 +20,9 @@ public class ContractWithConsumerTests : IDisposable
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public ContractWithConsumerTests(ITestOutputHelper testOutputHelper) 
+    public CardOrderApplicationEventTests(ITestOutputHelper testOutputHelper) 
     {
-        _pactVerifier = new PactVerifier("Demo.Provider", new PactVerifierConfig
+        _pactVerifier = new PactVerifier("Demo.Consumer", new PactVerifierConfig
         {
             Outputters = new []{ new PactXUnitOutput(testOutputHelper) }
         });
@@ -34,8 +34,8 @@ public class ContractWithConsumerTests : IDisposable
         // Arrange
         var message = new CardOrderApplicationEvent
         {
-            UserId = "rabbitmqUserId",
-            CardCode = 100,
+            UserId = "wqe",
+            CardCode = 123,
             ApplicationDate = new DateTime(2024, 12, 12)
         };
         _pactVerifier.WithMessages(scenarios =>
@@ -51,7 +51,12 @@ public class ContractWithConsumerTests : IDisposable
                     builder.WithMetadata(metadata).WithContent(() => message);
                 });
             }, _jsonSerializerOptions)
-            .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
+            .WithPactBrokerSource(new Uri("http://localhost:9292"), options =>
+            {
+                options.BasicAuthentication("admin", "pass");
+                options.PublishResults("3.3.3.");
+            })
+            // .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
             
             // Act && Assert
             .WithFilter(ComType)
