@@ -31,6 +31,11 @@ public class ConsumerCardService
         });
     }
 
+    public void PushUser(CardOrderSatisfiedEvent orderSatisfied)
+    {
+        Console.WriteLine($"Ваша карта готова: {orderSatisfied.UserId}, {orderSatisfied.CardCode}");
+    }
+    
     private CardAccountInfoResponse[] MapIntegrationToDomainModel(Integration.ProviderContracts.V1.UserCardAccountsDto userCardAccounts)
     {
         var clientName = userCardAccounts.ClientFullName;
