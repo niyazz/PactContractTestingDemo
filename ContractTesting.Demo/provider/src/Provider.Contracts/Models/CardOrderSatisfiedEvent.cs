@@ -1,11 +1,9 @@
 ﻿namespace Provider.Contracts.Models;
 
-public class CardOrderApplicationEvent
+public class CardOrderSatisfiedEvent
 {
     /// <summary> Идентификатор пользователя /// </summary>
     public string UserId { get; set; }
     /// <summary> Код карточного продукта /// </summary>
-    public int CardCode { get; set; }
-    /// <summary> Дата оформления заявления /// </summary>
-    public DateTime ApplicationDate { get; set; }
+    public string CardCode { get; set; }
 }
