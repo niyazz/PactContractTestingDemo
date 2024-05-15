@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using EasyNetQ;
 using Microsoft.AspNetCore.Mvc;
 using Provider.Contracts.Models;
 using Provider.Domain;
@@ -26,5 +27,27 @@ namespace Provider.Host.Controllers;
         {
             var result = await _cardAccountsRepository.GetCardAccountsByUserId(userId);
             return result != null ? Ok(MapperExtensions.MapDomainModelToContract(result)) : NotFound();
+        }
+        
+        /// <summary>
+        /// Отправить событие о готовности карты
+        /// </summary>
+        /// <param name="userId">Идентификатор клиента</param>
+        [HttpPost("order-satisfied/{userId}")]
+        public async Task<ActionResult> SendCardOrderSatisfiedEvent(string userId)
+        {
+            var advancedBus = RabbitHutch.CreateBus("host=localhost", s =>
+            {
+                s.EnableConsoleLogger();
+                s.EnableSystemTextJson();
+            }).Advanced;
+            var exchange = await advancedBus.ExchangeDeclareAsync("SpecialExchangeName", "direct");
+            var message = new Message<CardOrderSatisfiedEvent>(new CardOrderSatisfiedEvent
+            {
+                UserId = userId,
+                CardCode = Random.Shared.Next(100).ToString()
+            });
+            await advancedBus.PublishAsync(exchange, "super-routing-key", false, message);
+            return Ok();
         }
     }

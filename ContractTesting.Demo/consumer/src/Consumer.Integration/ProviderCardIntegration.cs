@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using Consumer.Integration.ProviderContracts.V1;
-using Newtonsoft.Json;
 
 namespace Consumer.Integration;
 
