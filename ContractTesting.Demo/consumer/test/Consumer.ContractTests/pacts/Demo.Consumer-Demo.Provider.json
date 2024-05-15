@@ -6,14 +6,72 @@
     {
       "contents": {
         "content": {
-          "applicationDate": "2024-12-12T00:00:00",
           "cardCode": 100,
+          "shouldBeNotified": false,
           "userId": "rabbitmqUserId"
         },
         "contentType": "application/json",
         "encoded": false
       },
-      "description": "RABBITMQ: CardOrderApplicationEvent handled",
+      "description": "RABBITMQ: CardOrderSatisfiedEvent no push",
+      "matchingRules": {
+        "body": {
+          "$.cardCode": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.userId": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "exchangeName": "SpecialExchangeName",
+        "routingKey": "super-routing-key"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "contents": {
+        "content": {
+          "cardCode": 100,
+          "shouldBeNotified": true,
+          "userId": "rabbitmqUserId"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "RABBITMQ: CardOrderSatisfiedEvent with push",
+      "matchingRules": {
+        "body": {
+          "$.cardCode": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.userId": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          }
+        }
+      },
       "metadata": {
         "exchangeName": "SpecialExchangeName",
         "routingKey": "super-routing-key"

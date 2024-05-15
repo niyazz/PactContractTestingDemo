@@ -1,9 +1,11 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
+using Consumer.Integration.ProviderContracts.V1;
 using PactHelper;
 using PactNet;
 using Xunit;
@@ -18,7 +20,7 @@ public class GetUserAccountsTests : IClassFixture<PactBrokerSender>
 
     public GetUserAccountsTests(ITestOutputHelper testOutputHelper, PactBrokerSender senderFixture)
     {
-        var pactConfig = new PactConfig
+        var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
         {
             Outputters = new[] {new PactXUnitOutput(testOutputHelper)},
             DefaultJsonSettings = new JsonSerializerOptions
@@ -26,9 +28,11 @@ public class GetUserAccountsTests : IClassFixture<PactBrokerSender>
                 PropertyNameCaseInsensitive = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             }
-        };
-        var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", pactConfig);
+        });
         senderFixture.PactInfo = pact;
+        senderFixture.ConsumerVersion = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion!;
         _pactBuilder = pact.WithHttpInteractions();
     }
     

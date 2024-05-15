@@ -4,7 +4,13 @@ using Consumer.Integration;
 
 namespace Consumer.Domain;
 
-public class ConsumerCardService
+public interface IConsumerCardService
+{
+    Task<Result<CardsScreenResponse>> GetCardsScreen(string userId);
+    void PushUser(CardOrderSatisfiedEvent orderSatisfied);
+}
+
+public class ConsumerCardService : IConsumerCardService
 {
     private readonly ProviderCardIntegration _providerCardIntegration;
 

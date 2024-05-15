@@ -10,7 +10,7 @@ public class PactBrokerSender : IDisposable
     protected readonly string PactPassword = "pass";
     private readonly PactBrokerPublisher _pactBrokerPublisher;
 
-    public string? ConsumerVersion { get; set; } 
+    public string ConsumerVersion { get; set; } 
     public IPact? PactInfo { get; set; }
     
     public PactBrokerSender()
@@ -29,6 +29,7 @@ public class PactBrokerSender : IDisposable
     public void Dispose()
     {
         Task.Run(async () => await _pactBrokerPublisher.Publish(
-            consumer: PactInfo.Consumer, provider: PactInfo.Provider, PactInfo.Config.PactDir, "5"));
+            consumer: PactInfo.Consumer, provider: PactInfo.Provider, PactInfo.Config.PactDir, 
+            ConsumerVersion + Guid.NewGuid().ToString().Substring(0, 5)));
     }
 }

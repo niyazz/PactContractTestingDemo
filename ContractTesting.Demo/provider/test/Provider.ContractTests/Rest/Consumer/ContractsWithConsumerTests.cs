@@ -25,6 +25,7 @@ public class ContractsWithConsumerTests : IDisposable
     
     private readonly IHostBuilder _serverBuilder;
     private IHost _server;
+    private readonly string _providerVersion;
 
     public ContractsWithConsumerTests(ITestOutputHelper outputHelper)
     {
@@ -41,6 +42,9 @@ public class ContractsWithConsumerTests : IDisposable
                 webBuilder.UseUrls(_serverUri.ToString());
                 webBuilder.UseStartup<Startup>();
             }); 
+        _providerVersion = Assembly.GetAssembly(typeof(UserCardAccountsResponse))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion!;
     }
     
     [Fact(DisplayName = "Rest контракты с потребителем Demo.Consumer соблюдаются")]
@@ -56,10 +60,6 @@ public class ContractsWithConsumerTests : IDisposable
                 services.AddSingleton<ICardAccountsRepository>(_ => _cardAccountsRepository.Object));
         _server = _serverBuilder.Build();
         _server.StartAsync();
-
-        var infoVersion = Assembly.GetAssembly(typeof(UserCardAccountsResponse))?
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-            .InformationalVersion;
         
         // Act & Assert
         _pactVerifier
@@ -67,7 +67,7 @@ public class ContractsWithConsumerTests : IDisposable
             .WithPactBrokerSource(new Uri("http://localhost:9292"), options =>
             {
                 options.BasicAuthentication("admin", "pass");
-                options.PublishResults(infoVersion);
+                options.PublishResults(_providerVersion);
             })
              // .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
             .WithFilter(ComType)

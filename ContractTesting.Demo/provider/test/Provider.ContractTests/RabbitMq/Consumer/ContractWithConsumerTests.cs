@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using PactNet.Verifier;
 using Provider.Contracts.Models;
@@ -12,6 +12,7 @@ public class ContractWithConsumerTests : IDisposable
 {
     private readonly PactVerifier _pactVerifier;
     private const string ComType = "RABBITMQ";
+    private readonly string _providerVersion;
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
@@ -25,32 +26,44 @@ public class ContractWithConsumerTests : IDisposable
         {
             Outputters = new []{ new PactXUnitOutput(testOutputHelper) }
         });
+        _providerVersion =  Assembly.GetAssembly(typeof(CardOrderSatisfiedEvent))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion!;
     }
     
     [Fact(DisplayName = "RabbitMq контракты с потребителем Demo.Consumer соблюдаются")]
     public void Verify_RabbitMqDemoConsumerContacts()
     {
         // Arrange
-        var message = new CardOrderSatisfiedEvent
+        var userId = "rabbitUserId";
+        var cardCode = 100;
+        var metadata = new Dictionary<string, string>
         {
-            UserId = "rabbitmqUserId",
-            CardCode = 100
+            {"exchangeName", "SpecialExchangeName"},
+            {"routingKey", "super-routing-key"}
         };
-        
         _pactVerifier.WithMessages(scenarios =>
             {
-                scenarios.Add($"{ComType}: CardOrderSatisfiedEvent handled", builder =>
+                scenarios.Add($"{ComType}: CardOrderSatisfiedEvent with push", builder =>
                 {
-                    var metadata = new Dictionary<string, string>
+                    builder.WithMetadata(metadata).WithContent(() => new CardOrderSatisfiedEvent
                     {
-                        {"exchangeName", "SpecialExchangeName"},
-                        {"routingKey", "super-routing-key"}
-                    };
-
-                    builder.WithMetadata(metadata).WithContent(() => message);
+                        UserId = userId, CardCode = cardCode, ShouldBeNotified = true
+                    });
+                });
+                scenarios.Add($"{ComType}: CardOrderSatisfiedEvent no push", builder =>
+                {
+                    builder.WithMetadata(metadata).WithContent(() => new CardOrderSatisfiedEvent
+                    {
+                        UserId = userId, CardCode = cardCode, ShouldBeNotified = false
+                    });
                 });
             }, _jsonSerializerOptions)
-            .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
+            .WithPactBrokerSource(new Uri("http://localhost:9292"), options =>
+            {
+                options.BasicAuthentication("admin", "pass");
+                options.PublishResults(_providerVersion);
+            })
             
             // Act && Assert
             .WithFilter(ComType)
