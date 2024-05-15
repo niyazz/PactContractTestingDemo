@@ -1,10 +1,11 @@
 using System;
-using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using PactNet.Verifier;
+using Provider.Contracts.Models;
 using Provider.Domain;
 using Provider.Domain.Models;
 using Provider.Host;
@@ -24,6 +25,7 @@ public class ContractsWithConsumerTests : IDisposable
     
     private readonly IHostBuilder _serverBuilder;
     private IHost _server;
+    private readonly string _providerVersion;
 
     public ContractsWithConsumerTests(ITestOutputHelper outputHelper)
     {
@@ -40,6 +42,9 @@ public class ContractsWithConsumerTests : IDisposable
                 webBuilder.UseUrls(_serverUri.ToString());
                 webBuilder.UseStartup<Startup>();
             }); 
+        _providerVersion = Assembly.GetAssembly(typeof(UserCardAccountsResponse))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion!;
     }
     
     [Fact(DisplayName = "Rest контракты с потребителем Demo.Consumer соблюдаются")]
@@ -59,7 +64,12 @@ public class ContractsWithConsumerTests : IDisposable
         // Act & Assert
         _pactVerifier
             .WithHttpEndpoint(_serverUri)
-            .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
+            .WithPactBrokerSource(new Uri("http://localhost:9292"), options =>
+            {
+                options.BasicAuthentication("admin", "pass");
+                options.PublishResults(_providerVersion);
+            })
+             // .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
             .WithFilter(ComType)
             .Verify();
     }

@@ -7,7 +7,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0"/>
-        <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="PactNet" Version="5.0.0-beta.2" />
         <PackageReference Include="PactNet.Abstractions" Version="5.0.0-beta.2" />
         <PackageReference Include="xunit" Version="2.4.1"/>

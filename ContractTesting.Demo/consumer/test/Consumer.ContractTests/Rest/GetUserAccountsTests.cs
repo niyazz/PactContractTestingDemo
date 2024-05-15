@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -19,11 +18,11 @@ public class GetUserAccountsTests
     {
         var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
         {
-            Outputters = new [] { new PactXUnitOutput(testOutputHelper)},
-            DefaultJsonSettings = new JsonSerializerOptions()
+            Outputters = new[] {new PactXUnitOutput(testOutputHelper)},
+            DefaultJsonSettings = new JsonSerializerOptions
             {
-               PropertyNameCaseInsensitive = true,
-               PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             }
         });
         _pactBuilder = pact.WithHttpInteractions();
