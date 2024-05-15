@@ -45,7 +45,7 @@ namespace Provider.Host.Controllers;
             var message = new Message<CardOrderSatisfiedEvent>(new CardOrderSatisfiedEvent
             {
                 UserId = userId,
-                CardCode = Random.Shared.Next(100).ToString()
+                CardCode = Random.Shared.Next(100)
             });
             await advancedBus.PublishAsync(exchange, "super-routing-key", false, message);
             return Ok();
