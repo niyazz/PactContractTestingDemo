@@ -12,12 +12,12 @@ using Xunit.Abstractions;
 
 namespace Consumer.ContractTests.Rest;
 
-public class GetUserAccountsTests : IClassFixture<PactBrokerSender>
+public class GetUserAccountsTests : IClassFixture<PactBrokerFixture>
 {
     private readonly IPactBuilderV4 _pactBuilder;
     private const string ComType = "REST";
 
-    public GetUserAccountsTests(ITestOutputHelper testOutputHelper, PactBrokerSender senderFixture)
+    public GetUserAccountsTests(ITestOutputHelper testOutputHelper, PactBrokerFixture brokerFixture)
     {
         var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
         {
@@ -28,8 +28,8 @@ public class GetUserAccountsTests : IClassFixture<PactBrokerSender>
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             }
         });
-        senderFixture.PactInfo = pact;
-        senderFixture.ConsumerVersion = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
+        brokerFixture.PactInfo = pact;
+        brokerFixture.ConsumerVersion = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion!;
         _pactBuilder = pact.WithHttpInteractions();

@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Consumer.Domain;
 using Consumer.Domain.Models.V1;
-using Moq;
 using PactHelper;
 using PactNet;
 using Xunit;
@@ -12,12 +10,12 @@ using Match = PactNet.Matchers.Match;
 
 namespace Consumer.ContractTests.RabbitMq;
 
-public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerSender>
+public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerFixture>
 {
     private readonly IMessagePactBuilderV4 _pactBuilder;
     private const string ComType = "RABBITMQ";
 
-    public CardOrderSatisfiedEventTests(ITestOutputHelper testOutputHelper, PactBrokerSender senderFixture)
+    public CardOrderSatisfiedEventTests(ITestOutputHelper testOutputHelper, PactBrokerFixture brokerFixture)
     {
         var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
         {
@@ -29,8 +27,8 @@ public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerSender>
             }
         });
         _pactBuilder = pact.WithMessageInteractions();
-        senderFixture.PactInfo = pact;
-        senderFixture.ConsumerVersion = Assembly.GetAssembly(typeof(CardOrderSatisfiedEvent))?
+        brokerFixture.PactInfo = pact;
+        brokerFixture.ConsumerVersion = Assembly.GetAssembly(typeof(CardOrderSatisfiedEvent))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion!;
     }

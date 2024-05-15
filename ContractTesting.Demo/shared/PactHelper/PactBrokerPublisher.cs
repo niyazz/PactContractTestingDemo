@@ -11,16 +11,15 @@ internal class PactBrokerPublisher
         _httpClient = httpClient;
     }
     
-    public async Task Publish(string consumer, string provider, string pactDir, string consumerVersion)
+    public async Task Publish(string consumer, string provider, string content, string consumerVersion)
     {
-        var pactJson = await File.ReadAllTextAsync($"{pactDir}/{consumer}-{provider}.json");
         var response = await _httpClient.PutAsync($"pacts/provider/{provider}/consumer/{consumer}/version/{consumerVersion}",
-            new StringContent(pactJson)
+            new StringContent(content)
             {
                 Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
             });
 
         if (response.IsSuccessStatusCode == false)
-            throw new ArgumentNullException($"{response.StatusCode}");
+            throw new ArgumentNullException($"Ошибка во время отправки пакта в PactBroker: {response.StatusCode}");
     } 
 }
