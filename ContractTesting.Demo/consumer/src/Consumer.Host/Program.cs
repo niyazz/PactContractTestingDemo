@@ -31,7 +31,9 @@ advanced.Bind(exchange, queue, routingKey: "super-routing-key");
 advanced.Consume<CardOrderSatisfiedEvent>(queue, (message, _) =>
     Task.Factory.StartNew(() =>
     {
-        Console.WriteLine($"Ваша карта готова: {message.Body.UserId}, {message.Body.CardCode}");
+        var handler = app.Services.GetRequiredService<ConsumerCardService>();
+        if(message.Body.ShouldBeNotified)
+            handler.PushUser(message.Body);
     }));
 
 #endregion
