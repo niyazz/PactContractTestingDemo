@@ -30,10 +30,11 @@ public class PactBrokerFixture : IDisposable
     {
         Task.Run(async () =>
         {
+            var versionSuffix = Guid.NewGuid().ToString().Substring(0, 5);
             var pactJson = await File.ReadAllTextAsync($"{PactInfo.Config.PactDir}/{PactInfo.Consumer}-{PactInfo.Provider}.json");
             await _pactBrokerPublisher.Publish(
                 consumer: PactInfo.Consumer, provider: PactInfo.Provider, content: pactJson,
-                ConsumerVersion + Guid.NewGuid().ToString().Substring(0, 5));
+                $"{ConsumerVersion}-{versionSuffix}");
         });
     }
 }
