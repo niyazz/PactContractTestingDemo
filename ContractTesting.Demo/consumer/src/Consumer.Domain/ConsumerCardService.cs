@@ -20,7 +20,7 @@ public class ConsumerCardService
         if (accountsInfo == null) 
             return Result.CreateFailure<CardsScreenResponse>();
         
-        var mappedAccountsInfo = MapIntegrationToDomainModel(accountsInfo);
+        var mappedAccountsInfo = MapUserCardAccountsDto(accountsInfo);
         var availableCardsCount = mappedAccountsInfo.SelectMany(x => x.Cards).Count(x => x.IsAvailable);
 
         return Result.CreateSuccess(new CardsScreenResponse
@@ -30,8 +30,22 @@ public class ConsumerCardService
             AccountsInfo = mappedAccountsInfo
         });
     }
+    
+    public async Task<Result<CardsScreenResponse>> OrderCard(string userId, CardOrderRequest request)
+    {
+        var cardInfo = await _providerCardIntegration.OrderCard(userId, request.AccountId, request.IsNamed);
 
-    private CardAccountInfoResponse[] MapIntegrationToDomainModel(Integration.ProviderContracts.V1.UserCardAccountsDto userCardAccounts)
+        if (cardInfo == null) 
+            return Result.CreateFailure<CardsScreenResponse>();
+        
+        return Result.CreateSuccess(new CardsScreenResponse
+        {
+            Title = "Ожидайте",
+            Description = $"Ваша карта {cardInfo.Id} в процессе выпуска"
+        });
+    }
+
+    private CardAccountInfoResponse[] MapUserCardAccountsDto(Integration.ProviderContracts.V1.UserCardAccountsDto userCardAccounts)
     {
         var clientName = userCardAccounts.ClientFullName;
         var clientAccounts = userCardAccounts.Accounts.Select(account => new CardAccountInfoResponse

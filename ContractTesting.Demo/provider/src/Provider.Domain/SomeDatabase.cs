@@ -7,6 +7,7 @@ public static class SomeDatabase
     private const string ActiveState = "ACTIVE";
     private const string BlockedState = "BLOCKED";
     private const string FrozenState = "FROZEN";
+    private const string PendingState = "PENDING";
 
 
     public static (string, CardAccountInfo[])? GetData(string userId)
@@ -14,6 +15,33 @@ public static class SomeDatabase
         if (UserData.TryGetValue(userId, out var userData) && UsersCardAccounts.TryGetValue(userId, out var userAccounts))
         {
             return (userData, userAccounts);
+        }
+        
+        return null;
+    }
+    
+    public static CardInfo? AddCard(string userId, string accountId, bool isNamed)
+    {
+        if (UserData.TryGetValue(userId, out var userData) && UsersCardAccounts.TryGetValue(userId, out var userAccounts))
+        {
+            var now = DateTime.Now;
+            var account = userAccounts.FirstOrDefault(a => a.Id == accountId);
+            if (account != null)
+            {
+                var card = new CardInfo
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Balance = 0,
+                    ExpiryDate = now + TimeSpan.FromDays(365 * 3),
+                    OpenDate = now,
+                    CloseDate = null,
+                    IsNamed = isNamed,
+                    State = PendingState
+                };
+                
+                account.Cards.Add(card);
+                return card;
+            }
         }
         
         return null;
@@ -31,10 +59,10 @@ public static class SomeDatabase
             {
                 new CardAccountInfo
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = "bc94da79-a290-4d27-96e1-d6cc5453be68",
                     OpenDate = new DateTime(2024, 02, 14),
                     CloseDate = null,
-                    Cards = new[]
+                    Cards = new()
                     {
                         new CardInfo
                         {
@@ -63,7 +91,7 @@ public static class SomeDatabase
                     Id = Guid.NewGuid().ToString(),
                     OpenDate = new DateTime(2022, 12, 31),
                     CloseDate = null,
-                    Cards = new[]
+                    Cards = new()
                     {
                         new CardInfo
                         {
@@ -87,7 +115,7 @@ public static class SomeDatabase
                     Id = Guid.NewGuid().ToString(),
                     OpenDate = new DateTime(2021, 02, 23),
                     CloseDate = null,
-                    Cards = new[]
+                    Cards = new()
                     {
                         new CardInfo
                         {
