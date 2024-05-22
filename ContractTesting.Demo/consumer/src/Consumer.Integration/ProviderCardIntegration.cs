@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using Consumer.Integration.ProviderContracts.V1;
 using Newtonsoft.Json;
@@ -25,8 +27,24 @@ public class ProviderCardIntegration : IProviderCardIntegration
                 PropertyNameCaseInsensitive = true
             });
         }
+        
+        return null;
+    }
+    
+    public async Task<CardDto?> OrderCard(string userId, string accountId, bool isNamed)
+    {
+        var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            isNamed
+        }), Encoding.UTF8, "application/json");
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        var response = await _httpClient.PostAsync($"api/provider/cards/{userId}?accountId={accountId}", content);
 
-        // в реальном приложении здесь мы пишем какие-то логи или делаем что-то еще
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<CardDto>(JsonSerializerOptions);
+        }
+        
         return null;
     }
 }
