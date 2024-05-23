@@ -49,8 +49,8 @@ public static class SomeDatabase
     
     private static Dictionary<string, string> UserData = new()
     {
-        {"userId1", "Иван_Иванов"},
-        {"userId2", "Петр_Петров"}
+        {"userId1", "Иван Иванов"},
+        {"userId2", "Петр Петров"}
     };
     private static Dictionary<string, CardAccountInfo[]> UsersCardAccounts = new()
     {

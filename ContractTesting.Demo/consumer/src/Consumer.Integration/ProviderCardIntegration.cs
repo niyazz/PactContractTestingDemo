@@ -3,17 +3,21 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Consumer.Integration.ProviderContracts.V1;
-using Newtonsoft.Json;
 
 namespace Consumer.Integration;
 
 public class ProviderCardIntegration : IProviderCardIntegration
 {
     private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _serializerOptions;
 
     public ProviderCardIntegration(HttpClient httpClient)
     {
         _httpClient = httpClient;
+        _serializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
     }
     
     public async Task<UserCardAccountsDto?> GetCardAccountInfo(string userId)
@@ -22,10 +26,7 @@ public class ProviderCardIntegration : IProviderCardIntegration
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<UserCardAccountsDto>(new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return await response.Content.ReadFromJsonAsync<UserCardAccountsDto>(_serializerOptions);
         }
         
         return null;
@@ -42,7 +43,7 @@ public class ProviderCardIntegration : IProviderCardIntegration
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<CardDto>(JsonSerializerOptions);
+            return await response.Content.ReadFromJsonAsync<CardDto>(_serializerOptions);
         }
         
         return null;

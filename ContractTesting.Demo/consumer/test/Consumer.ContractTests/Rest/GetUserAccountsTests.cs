@@ -4,13 +4,10 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Consumer.Integration.ProviderContracts.V1;
 using PactNet;
-using PactNet.Matchers;
 using Xunit;
 using Xunit.Abstractions;
-using IPAddress = PactNet.Models.IPAddress;
 
 namespace Consumer.ContractTests;
 
@@ -38,7 +35,14 @@ public class GetUserAccountsTests
     {
         // Arrange
         var userIdForSuccess = "successId1";
-        var expectedResponseBody = DataForTests.SuccessResult;
+        var expectedResponseBody = new CardDto
+        {
+            Id = "acid2797afe5-192f-4b08-9039-ae9d9652a9a7",
+            ExpiryDate = new DateTime(2027, 02, 14),
+            IsNamed = true,
+            Balance = 0,
+            State = "PENDING"
+        };
         
         _pactBuilder.UponReceiving("GET - /api/provider/cards/accounts/{userId} - 200 - body")
             .WithRequest(HttpMethod.Get, $"/api/provider/cards/accounts/{userIdForSuccess}")
