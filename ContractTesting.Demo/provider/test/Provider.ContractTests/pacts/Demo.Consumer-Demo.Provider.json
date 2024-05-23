@@ -52,6 +52,80 @@
         "status": 404
       },
       "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "POST - /api/provider/cards/{userId}?accountId - 200 - body",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "isNamed": true
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/api/provider/cards/successId1",
+        "query": {
+          "accountId": [
+            "accountId"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "balance": 0,
+            "expiryDate": "2027-02-14T00:00:00",
+            "id": "acid2797afe5-192f-4b08-9039-ae9d9652a9a7",
+            "isNamed": true,
+            "state": "PENDING"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "POST - /api/provider/cards/{userId}?accountId - 404 - no body",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "isNamed": true
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/api/provider/cards/failureId1",
+        "query": {
+          "accountId": [
+            "accountId"
+          ]
+        }
+      },
+      "response": {
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
     }
   ],
   "metadata": {
