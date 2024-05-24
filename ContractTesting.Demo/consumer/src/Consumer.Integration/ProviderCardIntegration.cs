@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Consumer.Integration;
 
-public class ProviderCardIntegration : IProviderCardIntegration
+public class ProviderCardIntegration 
 {
     private readonly HttpClient _httpClient;
 
