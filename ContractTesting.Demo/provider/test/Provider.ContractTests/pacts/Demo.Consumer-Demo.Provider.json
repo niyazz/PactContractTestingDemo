@@ -4,74 +4,6 @@
   },
   "interactions": [
     {
-      "contents": {
-        "content": {
-          "applicationDate": "2024-12-12T00:00:00",
-          "cardCode": 123,
-          "userId": "wqe"
-        },
-        "contentType": "application/json",
-        "encoded": false
-      },
-      "description": "RABBITMQ: CardOrderApplicationEvent handled",
-      "metadata": {
-        "exchangeName": "SpecialExchangeName",
-        "routingKey": "super-routing-key"
-      },
-      "pending": false,
-      "type": "Asynchronous/Messages"
-    },
-    {
-      "description": "REST: GET - /api/provider/cards/accounts/{userId} - 200 - body",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/api/provider/cards/accounts/successId1"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "accounts": [
-              {
-                "cards": [
-                  {
-                    "balance": 10000,
-                    "expiryDate": "2027-02-14T00:00:00",
-                    "id": "cdid897d676b-f5b7-496d-99cb-1d7d1b71a10d",
-                    "isNamed": true,
-                    "state": "ACTIVE"
-                  }
-                ],
-                "id": "acidef8ef642-3cab-4f70-9c12-c9757e698ad1"
-              }
-            ],
-            "clientFullName": "Иван Иванов"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "status": 200
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "REST: GET - /api/provider/cards/accounts/{userId} - 404 - no body",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/api/provider/cards/accounts/failureId1"
-      },
-      "response": {
-        "status": 404
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
       "description": "POST - /api/provider/cards/{userId}?accountId - 200 - body",
       "pending": false,
       "request": {
@@ -118,6 +50,214 @@
     },
     {
       "description": "POST - /api/provider/cards/{userId}?accountId - 404 - no body",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "isNamed": true
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/api/provider/cards/failureId1",
+        "query": {
+          "accountId": [
+            "accountId"
+          ]
+        }
+      },
+      "response": {
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "contents": {
+        "content": {
+          "applicationDate": "2024-12-12T00:00:00",
+          "cardCode": 100,
+          "userId": "rabbitmqUserId"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "RABBITMQ: CardOrderApplicationEvent handled",
+      "metadata": {
+        "exchangeName": "SpecialExchangeName",
+        "routingKey": "super-routing-key"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "contents": {
+        "content": {
+          "cardCode": 100,
+          "shouldBeNotified": false,
+          "userId": "rabbitmqUserId"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "RABBITMQ: CardOrderSatisfiedEvent no push",
+      "matchingRules": {
+        "body": {
+          "$.cardCode": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.userId": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "exchangeName": "SpecialExchangeName",
+        "routingKey": "super-routing-key"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "contents": {
+        "content": {
+          "cardCode": 100,
+          "shouldBeNotified": true,
+          "userId": "rabbitmqUserId"
+        },
+        "contentType": "application/json",
+        "encoded": false
+      },
+      "description": "RABBITMQ: CardOrderSatisfiedEvent with push",
+      "matchingRules": {
+        "body": {
+          "$.cardCode": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          },
+          "$.userId": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "exchangeName": "SpecialExchangeName",
+        "routingKey": "super-routing-key"
+      },
+      "pending": false,
+      "type": "Asynchronous/Messages"
+    },
+    {
+      "description": "REST: GET - /api/provider/cards/accounts/{userId} - 200 - body",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/api/provider/cards/accounts/successId1"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "balance": 0,
+            "expiryDate": "2027-02-14T00:00:00",
+            "id": "acid2797afe5-192f-4b08-9039-ae9d9652a9a7",
+            "isNamed": true,
+            "state": "PENDING"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "REST: GET - /api/provider/cards/accounts/{userId} - 404 - no body",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/api/provider/cards/accounts/failureId1"
+      },
+      "response": {
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "REST: POST - /api/provider/cards/{userId}?accountId - 200 - body",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "isNamed": true
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/api/provider/cards/successId1",
+        "query": {
+          "accountId": [
+            "accountId"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "balance": 0,
+            "expiryDate": "2027-02-14T00:00:00",
+            "id": "acid2797afe5-192f-4b08-9039-ae9d9652a9a7",
+            "isNamed": true,
+            "state": "PENDING"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "REST: POST - /api/provider/cards/{userId}?accountId - 404 - no body",
       "pending": false,
       "request": {
         "body": {
