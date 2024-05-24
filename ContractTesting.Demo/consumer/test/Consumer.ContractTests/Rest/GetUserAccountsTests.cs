@@ -1,18 +1,13 @@
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using PactNet;
-using PactNet.Matchers;
 using Xunit;
 using Xunit.Abstractions;
-using IPAddress = PactNet.Models.IPAddress;
 
-namespace Consumer.ContractTests;
+namespace Consumer.ContractTests.Rest;
 
 public class GetUserAccountsTests 
 {
