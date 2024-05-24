@@ -6,7 +6,7 @@ using Consumer.Integration.ProviderContracts.V1;
 
 namespace Consumer.Integration;
 
-public class ProviderCardIntegration : IProviderCardIntegration
+public class ProviderCardIntegration 
 {
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _serializerOptions;
