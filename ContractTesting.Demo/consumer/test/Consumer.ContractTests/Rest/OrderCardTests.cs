@@ -1,13 +1,16 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
+using Consumer.Integration.ProviderContracts.V1;
 using PactNet;
+using PactNet.Matchers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Consumer.ContractTests;
+namespace Consumer.ContractTests.Rest;
 
 public class OrderCardTests
 {
@@ -34,14 +37,20 @@ public class OrderCardTests
         // Arrange
         var userIdForSuccess = "successId1";
         var accountIdForSuccess = "accountId";
-        var actualRequestBody = new {IsNamed = true}; 
-        var expectedResponseBody = DataForTests.CardSuccessResult;
+        var actualRequestBody = new CreateCardOrderDto {IsNamed = true};
+        var expectedResponseBody = new
+        {
+            Id = Match.Type(string.Empty),
+            ExpiryDate = Match.Type(new DateTime(2027, 02, 14)),
+            IsNamed = true,
+            Balance = 0,
+            State = "PENDING"
+        };
 
         _pactBuilder.UponReceiving("POST - /api/provider/cards/{userId}?accountId - 200 - body")
             .WithRequest(HttpMethod.Post, $"/api/provider/cards/{userIdForSuccess}")
             .WithQuery("accountId", accountIdForSuccess)
             .WithJsonBody(actualRequestBody)
-       
             .WillRespond()
             .WithHeader("Content-Type", "application/json; charset=utf-8")
             .WithStatus(HttpStatusCode.OK)
@@ -54,28 +63,27 @@ public class OrderCardTests
             var contractIntegration = new ProviderCardIntegration(httpClient);
 
             // Act
-            var actualResponseBody = await contractIntegration.OrderCard(userIdForSuccess, accountIdForSuccess, 
+            var actualResponseBody = await contractIntegration.OrderCard(userIdForSuccess, accountIdForSuccess,
                 actualRequestBody.IsNamed);
 
             // Assert
             Assert.NotNull(actualResponseBody);
         });
     }
-    
+
     [Fact(DisplayName = "Demo.Provider при заказе карты возвращает 404, " +
                         "если клиент не существует")]
     public async Task OrderCardTests_WhenClientNotExist_ReturnsFailure404()
     {
         // Arrange
-        var userIdForFailure = "failureId1"; 
+        var userIdForFailure = "failureId1";
         var accountId = "accountId";
-        var actualRequestBody = new {IsNamed = true};
+        var actualRequestBody = new CreateCardOrderDto {IsNamed = true};
 
         _pactBuilder.UponReceiving("POST - /api/provider/cards/{userId}?accountId - 404 - no body")
             .WithRequest(HttpMethod.Post, $"/api/provider/cards/{userIdForFailure}")
             .WithQuery("accountId", accountId)
             .WithJsonBody(actualRequestBody)
-            
             .WillRespond()
             .WithStatus(HttpStatusCode.NotFound);
 
@@ -84,10 +92,11 @@ public class OrderCardTests
             using var httpClient = new HttpClient();
             httpClient.BaseAddress = ctx.MockServerUri;
             var contractIntegration = new ProviderCardIntegration(httpClient);
-            
+
             // Act
-            var actualResponseBody = await contractIntegration.OrderCard(userIdForFailure, accountId, actualRequestBody.IsNamed);
-            
+            var actualResponseBody =
+                await contractIntegration.OrderCard(userIdForFailure, accountId, actualRequestBody.IsNamed);
+
             // Assert
             Assert.Null(actualResponseBody);
         });
