@@ -82,7 +82,7 @@
           "content": {
             "balance": 0,
             "expiryDate": "2027-02-14T00:00:00",
-            "id": "acid2797afe5-192f-4b08-9039-ae9d9652a9a7",
+            "id": "",
             "isNamed": true,
             "state": "PENDING"
           },
@@ -93,6 +93,27 @@
           "Content-Type": [
             "application/json; charset=utf-8"
           ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.expiryDate": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
         },
         "status": 200
       },
