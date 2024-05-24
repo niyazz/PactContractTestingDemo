@@ -1,6 +1,4 @@
-﻿using System.Reflection;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Consumer.Domain.Models.V1;
 using PactHelper;
 using PactNet;
@@ -35,7 +33,7 @@ public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerFixture>
 
     [Fact(DisplayName = "Demo.Provider присылает корректный контракт и пуш отправляется," +
                         " когда получено событие и необходимо уведомление клиента")]
-    public async Task CardOrderSatisfiedEvent_WhenModelCorrectAndShouldBePushed_SendsPush()
+    public void CardOrderSatisfiedEvent_WhenModelCorrectAndShouldBePushed_SendsPush()
     {
         // Arrange
         var message = new
@@ -62,7 +60,7 @@ public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerFixture>
     
     [Fact(DisplayName = "Demo.Provider присылает корректный контракт и пуш не отправляется," +
                         " когда получено событие и не нужно уведомление клиента")]
-    public async Task CardOrderSatisfiedEvent_WhenModelCorrectAndShouldNotBePushed_DontSendPush()
+    public void CardOrderSatisfiedEvent_WhenModelCorrectAndShouldNotBePushed_DontSendPush()
     {
         // Arrange
         var message = new

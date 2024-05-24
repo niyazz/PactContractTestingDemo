@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.IO;
 using System.Text.Json;
 using PactNet.Verifier;
 using Provider.Contracts.Models;
@@ -12,7 +12,6 @@ public class ContractWithConsumerTests : IDisposable
 {
     private readonly PactVerifier _pactVerifier;
     private const string ComType = "RABBITMQ";
-    private readonly string _providerVersion;
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
@@ -26,9 +25,6 @@ public class ContractWithConsumerTests : IDisposable
         {
             Outputters = new []{ new PactXUnitOutput(testOutputHelper) }
         });
-        _providerVersion =  Assembly.GetAssembly(typeof(CardOrderSatisfiedEvent))?
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-            .InformationalVersion!;
     }
     
     [Fact(DisplayName = "RabbitMq контракты с потребителем Demo.Consumer соблюдаются")]
@@ -59,11 +55,7 @@ public class ContractWithConsumerTests : IDisposable
                     });
                 });
             }, _jsonSerializerOptions)
-            .WithPactBrokerSource(new Uri("http://localhost:9292"), options =>
-            {
-                options.BasicAuthentication("admin", "pass");
-                options.PublishResults(_providerVersion);
-            })
+            .WithFileSource(new FileInfo(@"..\..\..\pacts\Demo.Consumer-Demo.Provider.json"))
             
             // Act && Assert
             .WithFilter(ComType)
