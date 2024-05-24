@@ -8,7 +8,7 @@
         "content": {
           "cardCode": 100,
           "shouldBeNotified": false,
-          "userId": "rabbitmqUserId"
+          "userId": ""
         },
         "contentType": "application/json",
         "encoded": false
@@ -46,7 +46,7 @@
         "content": {
           "cardCode": 100,
           "shouldBeNotified": true,
-          "userId": "rabbitmqUserId"
+          "userId": ""
         },
         "contentType": "application/json",
         "encoded": false

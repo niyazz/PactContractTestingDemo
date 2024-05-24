@@ -39,7 +39,7 @@ public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerFixture>
         // Arrange
         var message = new
         {
-            UserId = Match.Type("rabbitmqUserId"),
+            UserId = Match.Type(string.Empty),
             CardCode = Match.Integer(100),
             ShouldBeNotified = true
         };
@@ -66,7 +66,7 @@ public class CardOrderSatisfiedEventTests : IClassFixture<PactBrokerFixture>
         // Arrange
         var message = new
         {
-            UserId = Match.Type("rabbitmqUserId"),
+            UserId = Match.Type(string.Empty),
             CardCode = Match.Integer(100),
             ShouldBeNotified = false
         };

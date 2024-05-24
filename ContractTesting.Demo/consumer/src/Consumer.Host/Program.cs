@@ -7,7 +7,7 @@ using EasyNetQ.DI;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<IConsumerCardService, ConsumerCardService>();
+builder.Services.AddScoped<ConsumerCardService>();
 builder.Services.AddHttpClient<ProviderCardIntegration>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ProviderAppBaseUrl"]);
@@ -31,7 +31,7 @@ advanced.Bind(exchange, queue, routingKey: "super-routing-key");
 advanced.Consume<CardOrderSatisfiedEvent>(queue, (message, _) =>
     Task.Factory.StartNew(() =>
     {
-        var handler = app.Services.GetRequiredService<IConsumerCardService>();
+        var handler = app.Services.GetRequiredService<ConsumerCardService>();
         if(message.Body.ShouldBeNotified)
             handler.PushUser(message.Body);
     }));

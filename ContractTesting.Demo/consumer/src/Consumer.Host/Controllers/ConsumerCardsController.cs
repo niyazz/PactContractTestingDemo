@@ -8,8 +8,8 @@ namespace Consumer.Host.Controllers;
 [Route("api/consumer/cards")]
 public class ConsumerCardsController : ControllerBase
 {
-    private readonly IConsumerCardService _consumerCardService;
-    public ConsumerCardsController(IConsumerCardService consumerCardService)
+    private readonly ConsumerCardService _consumerCardService;
+    public ConsumerCardsController(ConsumerCardService consumerCardService)
     {
         _consumerCardService = consumerCardService;
     }
