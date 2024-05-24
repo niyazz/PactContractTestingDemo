@@ -41,7 +41,7 @@ public class GetUserAccountsTests : IClassFixture<PactBrokerFixture>
     {
         // Arrange
         var userIdForSuccess = "successId1";
-        var expectedResponseBody = DataForTests.SuccessResult;
+        var expectedResponseBody = DataForTests.UserCardAccountsSuccessResult;
         
         _pactBuilder.UponReceiving($"{ComType}: GET - /api/provider/cards/accounts/{{userId}} - 200 - body")
             .WithRequest(HttpMethod.Get, $"/api/provider/cards/accounts/{userIdForSuccess}")

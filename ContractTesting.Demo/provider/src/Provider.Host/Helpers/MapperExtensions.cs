@@ -5,9 +5,8 @@ namespace Provider.Host.Helpers;
 
 public static class MapperExtensions
 {
-    public static UserCardAccountsResponse MapDomainModelToContract(UserCardAccounts userCardAccounts) =>
-
-        new ()
+    public static UserCardAccountsResponse MapUserCardAccounts(UserCardAccounts userCardAccounts) =>
+        new()
         {
             ClientFullName = userCardAccounts.UserFullName,
             Accounts = userCardAccounts.Accounts.Select(account => new CardAccountInfoResponse
@@ -15,18 +14,19 @@ public static class MapperExtensions
                 Id = account.Id,
                 OpenDate = account.OpenDate,
                 CloseDate = account.CloseDate,
-                Cards = account.Cards.Select(card => new CardInfoResponse
-                {
-                    Id = card.Id,
-                    OpenDate = card.OpenDate,
-                    CloseDate = card.CloseDate,
-                    ExpiryDate = card.ExpiryDate,
-                    Balance = card.Balance,
-                    IsNamed = card.IsNamed,
-                    State = card.State
-                }).ToArray()
+                Cards = account.Cards.Select(MapCardInfo).ToArray()
             }).ToArray(),
         };
 
-
+    public static CardInfoResponse MapCardInfo(CardInfo cardInfo) =>
+        new()
+        {
+            Id = cardInfo.Id,
+            OpenDate = cardInfo.OpenDate,
+            CloseDate = cardInfo.CloseDate,
+            ExpiryDate = cardInfo.ExpiryDate,
+            Balance = cardInfo.Balance,
+            IsNamed = cardInfo.IsNamed,
+            State = cardInfo.State
+        };
 }

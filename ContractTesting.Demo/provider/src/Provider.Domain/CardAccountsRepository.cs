@@ -17,4 +17,12 @@ public class CardAccountsRepository : ICardAccountsRepository
             }
             : null;
     }
+    
+    public async Task<CardInfo?> AddCard(string userId, string accountId, bool isNamed)
+    {
+        await Task.Delay(1000);
+        var dbResult = SomeDatabase.AddCard(userId, accountId, isNamed);
+
+        return dbResult;
+    }
 }

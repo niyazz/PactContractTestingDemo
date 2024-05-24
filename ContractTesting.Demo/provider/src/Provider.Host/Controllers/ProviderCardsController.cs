@@ -26,7 +26,21 @@ namespace Provider.Host.Controllers;
          public async Task<ActionResult<UserCardAccountsResponse>> GetUserCardAccounts(string userId)
         {
             var result = await _cardAccountsRepository.GetCardAccountsByUserId(userId);
-            return result != null ? Ok(MapperExtensions.MapDomainModelToContract(result)) : NotFound();
+            return result != null ? Ok(MapperExtensions.MapUserCardAccounts(result)) : NotFound();
+        }
+
+        /// <summary>
+        /// Заказ новой карты
+        /// </summary>
+        /// <param name="userId">Идентификатор клиента</param>
+        /// <param name="accountId">Идентификатор счёта</param>
+        /// <param name="request">Тело запроса</param>
+        [HttpPost("{userId}")]
+        public async Task<ActionResult<UserCardAccountsResponse>> CreateCardOrder(string userId, 
+            [FromQuery] string accountId, [FromBody] CreateCardOrderRequest request)
+        {
+            var result = await _cardAccountsRepository.AddCard(userId, accountId, request.IsNamed);
+            return result != null ? Ok(MapperExtensions.MapCardInfo(result)) : NotFound();
         }
         
         /// <summary>

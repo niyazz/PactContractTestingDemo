@@ -7,6 +7,7 @@ public static class SomeDatabase
     private const string ActiveState = "ACTIVE";
     private const string BlockedState = "BLOCKED";
     private const string FrozenState = "FROZEN";
+    private const string PendingState = "PENDING";
 
 
     public static (string, CardAccountInfo[])? GetData(string userId)
@@ -19,9 +20,36 @@ public static class SomeDatabase
         return null;
     }
     
+    public static CardInfo? AddCard(string userId, string accountId, bool isNamed)
+    {
+        if (UserData.TryGetValue(userId, out var userData) && UsersCardAccounts.TryGetValue(userId, out var userAccounts))
+        {
+            var now = DateTime.Now;
+            var account = userAccounts.FirstOrDefault(a => a.Id == accountId);
+            if (account != null)
+            {
+                var card = new CardInfo
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Balance = 0,
+                    ExpiryDate = now + TimeSpan.FromDays(365 * 3),
+                    OpenDate = now,
+                    CloseDate = null,
+                    IsNamed = isNamed,
+                    State = PendingState
+                };
+                
+                account.Cards.Add(card);
+                return card;
+            }
+        }
+        
+        return null;
+    }
+    
     private static Dictionary<string, string> UserData = new()
     {
-        {"userId1", "Марина Маринина"},
+        {"userId1", "Иван Иванов"},
         {"userId2", "Петр Петров"}
     };
     private static Dictionary<string, CardAccountInfo[]> UsersCardAccounts = new()
@@ -34,7 +62,7 @@ public static class SomeDatabase
                     Id = "acidef8ef642-3cab-4f70-9c12-c9757e698ad1",
                     OpenDate = new DateTime(2024, 02, 14),
                     CloseDate = null,
-                    Cards = new[]
+                    Cards = new()
                     {
                         new CardInfo
                         {
@@ -63,7 +91,7 @@ public static class SomeDatabase
                     Id = "acid6c2960ad-d688-40b0-975f-3c4bd524c4dc",
                     OpenDate = new DateTime(2022, 12, 31),
                     CloseDate = null,
-                    Cards = new[]
+                    Cards = new()
                     {
                         new CardInfo
                         {
@@ -87,7 +115,7 @@ public static class SomeDatabase
                     Id = "acid4f35ef7e-687b-44da-9e15-e091125ae880",
                     OpenDate = new DateTime(2021, 02, 23),
                     CloseDate = null,
-                    Cards = new[]
+                    Cards = new()
                     {
                         new CardInfo
                         {

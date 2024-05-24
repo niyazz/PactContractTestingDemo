@@ -52,10 +52,17 @@ public class ContractsWithConsumerTests : IDisposable
     public void Verify_RestDemoConsumerContacts()
     {
         // Arrange
-        _cardAccountsRepository.Setup(x => x.GetCardAccountsByUserId("successId1"))
-            .ReturnsAsync(DataForTests.SuccessResult);
-        _cardAccountsRepository.Setup(x => x.GetCardAccountsByUserId("failureId1"))
+        var successId = "successId1";
+        var failureId = "failureId1";
+        var accountId = "accountId";
+        _cardAccountsRepository.Setup(x => x.GetCardAccountsByUserId(successId))
+            .ReturnsAsync(DataForTests.UserCardAccountsSuccessResult);
+        _cardAccountsRepository.Setup(x => x.AddCard(successId, accountId, It.IsAny<bool>()))
+            .ReturnsAsync(DataForTests.CardSuccessResult);
+        _cardAccountsRepository.Setup(x => x.GetCardAccountsByUserId(failureId))
             .ReturnsAsync((UserCardAccounts?)null);
+        _cardAccountsRepository.Setup(x => x.AddCard(failureId, accountId, It.IsAny<bool>()))
+            .ReturnsAsync((CardInfo?)null);
 
         _serverBuilder.ConfigureServices(services => 
                 services.AddSingleton<ICardAccountsRepository>(_ => _cardAccountsRepository.Object));

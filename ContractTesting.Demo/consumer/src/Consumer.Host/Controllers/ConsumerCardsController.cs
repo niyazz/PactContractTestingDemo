@@ -24,4 +24,16 @@ public class ConsumerCardsController : ControllerBase
         var result = await _consumerCardService.GetCardsScreen(userId);
         return result.Success ? Ok(result.Data) : BadRequest();
     }
+    
+    /// <summary>
+    /// Заказать карту
+    /// </summary>
+    /// <param name="userId">Идентификатор клиента</param>
+    /// <param name="request">Тело запроса</param>
+    [HttpPost("{userId}")]
+    public async Task<ActionResult<CardsScreenResponse>> OrderCard(string userId, [FromBody] CardOrderRequest request)
+    {
+        var result = await _consumerCardService.OrderCard(userId, request);
+        return result.Success ? Ok(result.Data) : BadRequest();
+    }
 }

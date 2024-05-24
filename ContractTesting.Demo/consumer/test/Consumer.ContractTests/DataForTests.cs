@@ -5,7 +5,7 @@ namespace Consumer.ContractTests;
 
 public static class DataForTests
 {
-    public static UserCardAccountsDto SuccessResult = new ()
+    public static UserCardAccountsDto UserCardAccountsSuccessResult = new()
     {
         ClientFullName = "Иван Иванов",
         Accounts = new[]
@@ -26,5 +26,14 @@ public static class DataForTests
                 },
             }
         }
+    };
+
+    public static CardDto CardSuccessResult = new()
+    {
+        Id = "acid2797afe5-192f-4b08-9039-ae9d9652a9a7",
+        ExpiryDate = new DateTime(2027, 02, 14),
+        IsNamed = true,
+        Balance = 0,
+        State = "PENDING"
     };
 }
