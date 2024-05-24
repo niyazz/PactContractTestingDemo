@@ -36,7 +36,7 @@ namespace Provider.Host.Controllers;
         /// <param name="accountId">Идентификатор счёта</param>
         /// <param name="request">Тело запроса</param>
         [HttpPost("{userId}")]
-        public async Task<ActionResult<UserCardAccountsResponse>> CreateCardOrder(string userId, 
+        public async Task<ActionResult<CardInfoResponse>> CreateCardOrder(string userId, 
             [FromQuery] string accountId, [FromBody] CreateCardOrderRequest request)
         {
             var result = await _cardAccountsRepository.AddCard(userId, accountId, request.IsNamed);
