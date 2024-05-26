@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Consumer.Integration;
 using Consumer.Integration.ProviderContracts.V1;
+using PactHelper;
 using PactNet;
 using PactNet.Matchers;
 using Xunit;
@@ -12,12 +14,12 @@ using Xunit.Abstractions;
 
 namespace Consumer.ContractTests.Rest;
 
-public class OrderCardTests
+public class OrderCardTests : IClassFixture<PactBrokerFixture>
 {
     private readonly IPactBuilderV4 _pactBuilder;
     private const string ComType = "REST";
 
-    public OrderCardTests(ITestOutputHelper testOutputHelper)
+    public OrderCardTests(ITestOutputHelper testOutputHelper, PactBrokerFixture brokerFixture)
     {
         var pact = Pact.V4(consumer: "Demo.Consumer", provider: "Demo.Provider", new PactConfig
         {
@@ -28,6 +30,10 @@ public class OrderCardTests
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             }
         });
+        brokerFixture.PactInfo = pact;
+        brokerFixture.ConsumerVersion = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion!;
         _pactBuilder = pact.WithHttpInteractions();
     }
 

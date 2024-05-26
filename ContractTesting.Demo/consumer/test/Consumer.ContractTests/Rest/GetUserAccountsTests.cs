@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 
 namespace Consumer.ContractTests.Rest;
 
-public class GetUserAccountsTests : IClassFixture<PactBrokerFixture>
+public class GetUserAccountsTests //: IClassFixture<PactBrokerFixture>
 {
     private readonly IPactBuilderV4 _pactBuilder;
     private const string ComType = "REST";
@@ -28,10 +28,10 @@ public class GetUserAccountsTests : IClassFixture<PactBrokerFixture>
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             }
         });
-        brokerFixture.PactInfo = pact;
+       /* brokerFixture.PactInfo = pact;
         brokerFixture.ConsumerVersion = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-            .InformationalVersion!;
+            .InformationalVersion!;*/
         _pactBuilder = pact.WithHttpInteractions();
     }
     
