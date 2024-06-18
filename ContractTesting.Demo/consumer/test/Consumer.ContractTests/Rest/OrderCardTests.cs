@@ -15,6 +15,7 @@ namespace Consumer.ContractTests.Rest;
 public class OrderCardTests
 {
     private readonly IPactBuilderV4 _pactBuilder;
+    private const string ComType = "REST";
 
     public OrderCardTests(ITestOutputHelper testOutputHelper)
     {
@@ -47,7 +48,7 @@ public class OrderCardTests
             State = "PENDING"
         };
 
-        _pactBuilder.UponReceiving("POST - /api/provider/cards/{userId}?accountId - 200 - body")
+        _pactBuilder.UponReceiving($"{ComType}: POST - /api/provider/cards/{{userId}}?accountId - 200 - body")
             .WithRequest(HttpMethod.Post, $"/api/provider/cards/{userIdForSuccess}")
             .WithQuery("accountId", accountIdForSuccess)
             .WithJsonBody(actualRequestBody)
@@ -80,7 +81,7 @@ public class OrderCardTests
         var accountId = "accountId";
         var actualRequestBody = new CreateCardOrderDto {IsNamed = true};
 
-        _pactBuilder.UponReceiving("POST - /api/provider/cards/{userId}?accountId - 404 - no body")
+        _pactBuilder.UponReceiving($"{ComType}: POST - /api/provider/cards/{{userId}}?accountId - 404 - no body")
             .WithRequest(HttpMethod.Post, $"/api/provider/cards/{userIdForFailure}")
             .WithQuery("accountId", accountId)
             .WithJsonBody(actualRequestBody)
