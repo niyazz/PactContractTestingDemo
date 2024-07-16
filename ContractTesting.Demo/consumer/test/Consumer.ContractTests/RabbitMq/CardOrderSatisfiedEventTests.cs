@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using Consumer.Domain.Models.V1;
+using Consumer.Integration.ProviderContracts.V1;
 using PactHelper;
 using PactNet;
 using Xunit;

@@ -1,4 +1,4 @@
-﻿namespace Consumer.Domain.Models.V1;
+﻿namespace Consumer.Integration.ProviderContracts.V1;
 public class CardOrderSatisfiedEvent
 {
     /// <summary> Идентификатор пользователя /// </summary>

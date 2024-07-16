@@ -1,6 +1,6 @@
 using Consumer.Domain;
-using Consumer.Domain.Models.V1;
 using Consumer.Integration;
+using Consumer.Integration.ProviderContracts.V1;
 using EasyNetQ;
 using EasyNetQ.DI;
 

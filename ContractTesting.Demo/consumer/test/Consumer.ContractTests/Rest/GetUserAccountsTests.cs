@@ -29,6 +29,9 @@ public class GetUserAccountsTests : IClassFixture<PactBrokerFixture>
             }
         });
         brokerFixture.PactInfo = pact;
+        var t = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion!;
         brokerFixture.ConsumerVersion = Assembly.GetAssembly(typeof(UserCardAccountsDto))?
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
             .InformationalVersion!;
