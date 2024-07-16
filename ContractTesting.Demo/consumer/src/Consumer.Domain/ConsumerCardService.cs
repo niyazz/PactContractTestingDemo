@@ -1,6 +1,7 @@
 ﻿using Consumer.Domain.Models.V1;
 using Consumer.Domain.Utils;
 using Consumer.Integration;
+using Consumer.Integration.ProviderContracts.V1;
 
 namespace Consumer.Domain;
 
